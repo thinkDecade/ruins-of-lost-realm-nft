@@ -75,10 +75,27 @@ export default function Home() {
         <meta name="description" content="Discover and collect mystical runes from the lost realm" />
       </Head>
 
+      {/* Animated Background Runes */}
+      <div className="fixed inset-0 overflow-hidden pointer-events-none">
+        {Array.from({ length: 20 }).map((_, i) => (
+          <div
+            key={i}
+            className="rune-bg"
+            style={{
+              left: `${Math.random() * 100}%`,
+              top: `${Math.random() * 100}%`,
+              animationDelay: `${Math.random() * 5}s`,
+            }}
+          >
+            ᚱ
+          </div>
+        ))}
+      </div>
+
       {/* Navigation */}
       <nav className="fixed w-full z-50 backdrop-blur-md bg-midnight-blue/80 border-b border-cosmic-indigo">
         <div className="container mx-auto px-4 py-4 flex justify-between items-center">
-          <div className="text-2xl font-bold text-mystic-silver">
+          <div className="text-2xl font-bold hero-title">
             Runes of Lost Realm
           </div>
           <ConnectButton />
@@ -86,46 +103,17 @@ export default function Home() {
       </nav>
 
       {/* Hero Section */}
-      <section 
-        className="min-h-screen flex items-center justify-center relative"
-        style={{ transform: `translateY(${scrollY * 0.5}px)` }}
-      >
-        <div className="absolute inset-0 overflow-hidden">
-          {/* Animated Runes Background */}
-          <div className="runes-container">
-            {Array.from({ length: 20 }).map((_, i) => (
-              <div
-                key={i}
-                className="absolute glow-effect"
-                style={{
-                  left: `${Math.random() * 100}%`,
-                  top: `${Math.random() * 100}%`,
-                  animation: `float ${5 + Math.random() * 5}s infinite`,
-                }}
-              >
-                ᚱ
-              </div>
-            ))}
-          </div>
-        </div>
-
+      <section className="min-h-screen flex items-center justify-center relative pt-20">
         <div className="container mx-auto px-4 text-center z-10">
-          <h1 className="text-6xl font-bold mb-6 text-mystic-silver">
+          <h1 className="hero-title text-6xl md:text-7xl font-bold mb-6">
             Discover Ancient Runes
           </h1>
-          <p className="text-xl mb-8 text-mystic-silver/80">
-            Collect and own mystical runes from the lost realm
+          <p className="text-xl md:text-2xl mb-8 text-mystic-silver/80 max-w-2xl mx-auto">
+            Collect and own mystical runes from the lost realm, each holding unique powers and ancient wisdom
           </p>
-          <button className="btn-primary text-lg">
-            {address ? 'Mint Now' : 'Connect Wallet'}
-          </button>
-        </div>
-      </section>
-
-      {/* Minting Section */}
-      <section className="py-20 relative">
-        <div className="container mx-auto px-4 max-w-lg">
-          <MintingSection />
+          <div className="space-y-4">
+            <MintingSection />
+          </div>
         </div>
       </section>
 
@@ -133,8 +121,10 @@ export default function Home() {
       <NFTGallery />
 
       {/* Footer */}
-      <footer className="mt-24 pb-8 text-center text-gray-400">
-        <p>© 2024 Runes of Lost Realms. All rights reserved.</p>
+      <footer className="py-8 text-center text-mystic-silver/60">
+        <div className="container mx-auto px-4">
+          <p>© 2024 Runes of Lost Realm. All rights reserved.</p>
+        </div>
       </footer>
     </div>
   );
