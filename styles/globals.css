@@ -1,0 +1,50 @@
+:root {
+  --midnight-blue: #0a0f2c;
+  --cosmic-indigo: #1c1e4a;
+  --neon-gold: #f5c242;
+  --luminous-cyan: #7ae8ff;
+  --dark-slate: #3b3d54;
+  --mystic-silver: #c9d1d9;
+}
+
+@keyframes glow {
+  0% { filter: brightness(1); }
+  50% { filter: brightness(1.2); }
+  100% { filter: brightness(1); }
+}
+
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+body {
+  background: linear-gradient(135deg, var(--midnight-blue), var(--cosmic-indigo));
+  color: var(--mystic-silver);
+  min-height: 100vh;
+  font-family: 'Inter', sans-serif;
+}
+
+.glow-effect {
+  animation: glow 2s infinite;
+}
+
+.float-effect {
+  animation: float 6s ease-in-out infinite;
+}
+
+.btn-primary {
+  background: linear-gradient(45deg, var(--neon-gold), var(--luminous-cyan));
+  border: none;
+  padding: 12px 24px;
+  border-radius: 8px;
+  color: var(--midnight-blue);
+  font-weight: bold;
+  transition: all 0.3s ease;
+}
+
+.btn-primary:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 0 15px var(--neon-gold);
+} 

@@ -2,6 +2,9 @@ import { useState, useEffect } from 'react';
 import { useAccount, useContractRead, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { formatEther } from 'viem';
+import Head from 'next/head';
+import MintingSection from '../components/MintingSection';
+import NFTGallery from '../components/NFTGallery';
 
 const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 const CONTRACT_ABI = [
@@ -17,6 +20,7 @@ const CONTRACT_ABI = [
 export default function Home() {
   const [quantity, setQuantity] = useState(1);
   const { address, isConnected } = useAccount();
+  const [scrollY, setScrollY] = useState(0);
 
   // Contract reads
   const { data: balance } = useContractRead({
@@ -58,88 +62,75 @@ export default function Home() {
     hash: mintData?.hash,
   });
 
+  useEffect(() => {
+    const handleScroll = () => setScrollY(window.scrollY);
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <div className="min-h-screen bg-gradient-to-b from-gray-900 to-black text-white">
+    <div className="min-h-screen">
+      <Head>
+        <title>Runes of Lost Realm NFT</title>
+        <meta name="description" content="Discover and collect mystical runes from the lost realm" />
+      </Head>
+
       {/* Navigation */}
-      <nav className="fixed w-full p-4 flex justify-between items-center z-10 bg-black/50 backdrop-blur-sm">
-        <div className="text-xl font-bold">Runes of Lost Realms</div>
-        <ConnectButton />
+      <nav className="fixed w-full z-50 backdrop-blur-md bg-midnight-blue/80 border-b border-cosmic-indigo">
+        <div className="container mx-auto px-4 py-4 flex justify-between items-center">
+          <div className="text-2xl font-bold text-mystic-silver">
+            Runes of Lost Realm
+          </div>
+          <ConnectButton />
+        </div>
       </nav>
 
       {/* Hero Section */}
-      <main className="pt-24 px-4">
-        <div className="max-w-6xl mx-auto">
-          <div className="text-center mb-16">
-            <h1 className="text-6xl font-bold mb-6 bg-gradient-to-r from-purple-400 to-pink-600 text-transparent bg-clip-text">
-              Runes of Lost Realms
-            </h1>
-            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
-              Discover the ancient power of magical runes from forgotten realms. Each rune holds unique powers and mysteries waiting to be unlocked.
-            </p>
-          </div>
-
-          {/* Mint Card */}
-          <div className="max-w-md mx-auto bg-gray-800/50 rounded-2xl p-6 backdrop-blur-sm border border-gray-700">
-            <div className="flex justify-between items-center mb-8">
-              <div className="text-gray-400">Price per Rune</div>
-              <div className="text-xl font-bold">
-                {mintPrice ? formatEther(BigInt(mintPrice)) : '0.00777'} ETH
+      <section 
+        className="min-h-screen flex items-center justify-center relative"
+        style={{ transform: `translateY(${scrollY * 0.5}px)` }}
+      >
+        <div className="absolute inset-0 overflow-hidden">
+          {/* Animated Runes Background */}
+          <div className="runes-container">
+            {Array.from({ length: 20 }).map((_, i) => (
+              <div
+                key={i}
+                className="absolute glow-effect"
+                style={{
+                  left: `${Math.random() * 100}%`,
+                  top: `${Math.random() * 100}%`,
+                  animation: `float ${5 + Math.random() * 5}s infinite`,
+                }}
+              >
+                ᚱ
               </div>
-            </div>
-
-            <div className="flex justify-between items-center mb-8">
-              <div className="text-gray-400">Remaining</div>
-              <div className="text-xl font-bold">
-                {maxSupply && totalSupply ? 
-                  `${(Number(maxSupply) - Number(totalSupply)).toString()} / ${maxSupply.toString()}` 
-                  : 'Loading...'}
-              </div>
-            </div>
-
-            {isConnected ? (
-              <>
-                <div className="flex justify-center items-center gap-6 mb-6">
-                  <button 
-                    onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                    className="w-12 h-12 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors"
-                  >
-                    -
-                  </button>
-                  <span className="text-2xl font-bold">{quantity}</span>
-                  <button 
-                    onClick={() => setQuantity(Math.min(2, quantity + 1))}
-                    className="w-12 h-12 rounded-full bg-gray-700 hover:bg-gray-600 transition-colors"
-                  >
-                    +
-                  </button>
-                </div>
-
-                <button
-                  onClick={() => mint?.()}
-                  disabled={isMinting}
-                  className="w-full py-4 bg-gradient-to-r from-purple-500 to-pink-500 rounded-xl font-bold text-lg hover:opacity-90 transition-opacity disabled:opacity-50"
-                >
-                  {isMinting ? 'Minting...' : `Mint ${quantity} Rune${quantity > 1 ? 's' : ''}`}
-                </button>
-
-                {isMinted && (
-                  <div className="mt-4 text-center text-green-400">
-                    Successfully minted your Rune(s)!
-                  </div>
-                )}
-
-                <div className="mt-4 text-center text-gray-400">
-                  Your balance: {balance?.toString() || '0'} Runes
-                </div>
-              </>
-            ) : (
-              <div className="text-center">
-                <ConnectButton />
-              </div>
-            )}
+            ))}
           </div>
         </div>
-      </main>
+
+        <div className="container mx-auto px-4 text-center z-10">
+          <h1 className="text-6xl font-bold mb-6 text-mystic-silver">
+            Discover Ancient Runes
+          </h1>
+          <p className="text-xl mb-8 text-mystic-silver/80">
+            Collect and own mystical runes from the lost realm
+          </p>
+          <button className="btn-primary text-lg">
+            {address ? 'Mint Now' : 'Connect Wallet'}
+          </button>
+        </div>
+      </section>
+
+      {/* Minting Section */}
+      <section className="py-20 relative">
+        <div className="container mx-auto px-4 max-w-lg">
+          <MintingSection />
+        </div>
+      </section>
+
+      {/* NFT Gallery */}
+      <NFTGallery />
 
       {/* Footer */}
       <footer className="mt-24 pb-8 text-center text-gray-400">
