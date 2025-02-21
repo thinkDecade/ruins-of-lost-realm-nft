@@ -3,7 +3,7 @@ import { useAccount, useContractRead, useContractWrite, useWaitForTransaction } 
 import { ConnectButton } from '@rainbow-me/rainbowkit';
 import { formatEther } from 'viem';
 
-const CONTRACT_ADDRESS = "YOUR_CONTRACT_ADDRESS_HERE";
+const CONTRACT_ADDRESS = process.env.NEXT_PUBLIC_CONTRACT_ADDRESS as `0x${string}`;
 const CONTRACT_ABI = [
   "function mint() external payable",
   "function mintBatch(uint256 quantity) external payable",
@@ -12,7 +12,7 @@ const CONTRACT_ABI = [
   "function MAX_PER_WALLET() external view returns (uint256)",
   "function TOTAL_SUPPLY() external view returns (uint256)",
   "function totalSupply() external view returns (uint256)"
-];
+] as const;
 
 export default function Home() {
   const [quantity, setQuantity] = useState(1);
@@ -20,7 +20,7 @@ export default function Home() {
 
   // Contract reads
   const { data: balance } = useContractRead({
-    address: CONTRACT_ADDRESS as `0x${string}`,
+    address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'balanceOf',
     args: [address || '0x0'],
@@ -28,26 +28,26 @@ export default function Home() {
   });
 
   const { data: mintPrice } = useContractRead({
-    address: CONTRACT_ADDRESS as `0x${string}`,
+    address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'MINT_PRICE',
-  });
+  }) as { data: bigint };
 
   const { data: totalSupply } = useContractRead({
-    address: CONTRACT_ADDRESS as `0x${string}`,
+    address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'totalSupply',
   });
 
   const { data: maxSupply } = useContractRead({
-    address: CONTRACT_ADDRESS as `0x${string}`,
+    address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: 'TOTAL_SUPPLY',
   });
 
   // Contract writes
   const { write: mint, data: mintData } = useContractWrite({
-    address: CONTRACT_ADDRESS as `0x${string}`,
+    address: CONTRACT_ADDRESS,
     abi: CONTRACT_ABI,
     functionName: quantity === 1 ? 'mint' : 'mintBatch',
     args: quantity === 1 ? [] : [quantity],
@@ -83,7 +83,7 @@ export default function Home() {
             <div className="flex justify-between items-center mb-8">
               <div className="text-gray-400">Price per Rune</div>
               <div className="text-xl font-bold">
-                {mintPrice ? formatEther(mintPrice.toString()) : '0.00777'} ETH
+                {mintPrice ? formatEther(BigInt(mintPrice)) : '0.00777'} ETH
               </div>
             </div>
 
