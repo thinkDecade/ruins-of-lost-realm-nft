@@ -1,9 +1,5 @@
 import '@rainbow-me/rainbowkit/styles.css';
-import type { AppProps } from 'next/app';
-import {
-  getDefaultWallets,
-  RainbowKitProvider,
-} from '@rainbow-me/rainbowkit';
+import { getDefaultWallets, RainbowKitProvider } from '@rainbow-me/rainbowkit';
 import { configureChains, createConfig, WagmiConfig } from 'wagmi';
 import { arbitrum } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
@@ -14,7 +10,7 @@ const { chains, publicClient } = configureChains(
 );
 
 const { connectors } = getDefaultWallets({
-  appName: 'Runes of Lost Realms',
+  appName: 'Runes of Lost Realm',
   projectId: 'YOUR_WALLETCONNECT_PROJECT_ID',
   chains
 });
@@ -25,7 +21,7 @@ const wagmiConfig = createConfig({
   publicClient
 });
 
-function MyApp({ Component, pageProps }: AppProps) {
+export default function App({ Component, pageProps }) {
   return (
     <WagmiConfig config={wagmiConfig}>
       <RainbowKitProvider chains={chains}>
@@ -33,6 +29,4 @@ function MyApp({ Component, pageProps }: AppProps) {
       </RainbowKitProvider>
     </WagmiConfig>
   );
-}
-
-export default MyApp; 
+} 
