@@ -3,7 +3,6 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   /* Production configuration */
   reactStrictMode: true,
-  swcMinify: true,
   poweredByHeader: false,
   images: {
     domains: [],
